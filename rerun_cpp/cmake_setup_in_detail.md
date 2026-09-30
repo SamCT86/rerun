@@ -20,6 +20,24 @@ This will download a bundle with pre-built Rerun C static libraries for most des
 all Rerun C++ sources and headers, as well as CMake build instructions for them.
 By default this will also download & build [Apache Arrow](https://arrow.apache.org/)'s C++ library which is required to build the Rerun C++. See [Install Arrow C++](arrow_cpp_install.md) to learn more about this step and how to use an existing install.
 
+### Linking the SDK into a shared library
+
+On platforms where a shared library can only link position-independent object code, a static `rerun_sdk`
+must be built with position-independent code enabled. Set CMake's standard option before creating the
+Rerun targets:
+
+```cmake
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+include(FetchContent)
+FetchContent_Declare(rerun_sdk URL
+    https://github.com/rerun-io/rerun/releases/latest/download/rerun_cpp_sdk.zip)
+FetchContent_MakeAvailable(rerun_sdk)
+```
+
+This is only needed when your build requires position-independent static objects, for example when linking
+the static Rerun SDK into your own shared library. It does not require enabling `BUILD_SHARED_LIBS`.
+
 We recommend this `FetchContent` workflow for all usecases since it is the easiest and works without any additional configuration.
 All other workflows and configuration are there to best address more specific needs a project setup may haves.
 
